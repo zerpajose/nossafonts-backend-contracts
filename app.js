@@ -4,7 +4,7 @@ import cors from 'cors'
 import multer from 'multer'
 import fs from 'fs'
 
-import { getIsAllowed, storeFileToIPFS, storeCSSToIPFS, saveToTable, selectAll, selectSearch } from './lib/functions.js'
+import { getIsAllowed, storeFileToIPFS, storeCSSToIPFS, saveToTable, selectAll, selectSearch, storeMetadataToIPFS } from './lib/functions.js'
 
 const PORT = 3000
 
@@ -59,26 +59,25 @@ app.post("/fonts", upload.single('file'), async (req, res) => {
   */
 
   const { name } = req.body
-  const { filename, buffer } = req.file
+  //console.log(`req.file: ${JSON.stringify(req.file)}`)
+  
+  const { filename, originalname, buffer } = req.file
 
   const file_blob = new Blob([buffer])
+  // const file = new File([buffer], originalname)
 
-  // const cid_file = await storeFileToIPFS(file_blob, mimetype)
-  // const cid_css = await storeCSSToIPFS(name, style, weight, cid_file)
+  // const cid_file = await storeFileToIPFS(file)
+  const cid_font_file = await storeFileToIPFS(file_blob)
+  const cid_css_file = await storeCSSToIPFS(name, originalname, cid_font_file)
+  const cid_metadata_file = await storeMetadataToIPFS(name, cid_css_file)
 
   fs.unlinkSync(`./uploads/${filename}`);
 
   res.json({
     name: name,
-    filename: filename
+    cid_css_file: cid_css_file,
+    cid_metadata_file: cid_metadata_file
   })
-
-  // res.json({
-  //   name: name,
-  //   style: style,
-  //   weight: weight,
-  //   cid_css: cid_css
-  // })
   
   res.end()
 })
