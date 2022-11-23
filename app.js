@@ -66,12 +66,12 @@ app.post("/fonts", upload.single("file"), async (req, res) => {
   const { name } = req.body;
 
   const { filename, originalname, buffer } = req.file;
-
+  const name_css = `${originalname.split(".")[0]}.css`;
   const file_blob = new Blob([buffer]);
 
   const cid_font_file = await storeFileToIPFS(file_blob);
-  const cid_css_file = await storeCSSToIPFS(name, originalname, cid_font_file);
-  const cid_metadata_file = await storeMetadataToIPFS(name, cid_css_file);
+  const cid_css_file = await storeCSSToIPFS(name, name_css, cid_font_file);
+  const cid_metadata_file = await storeMetadataToIPFS(name, name_css, cid_css_file);
 
   fs.unlinkSync(`./uploads/${filename}`);
 
