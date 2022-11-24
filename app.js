@@ -16,7 +16,9 @@ import {
 
 const PORT = 3000;
 
-const upload = multer({ dest: "uploads/" });
+//const upload = multer({ dest: "uploads/" });
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 const app = express();
 app.use(express.json());
@@ -64,16 +66,17 @@ app.post("/fonts", upload.single("file"), async (req, res) => {
   */
 
   const { name } = req.body;
-
   const { filename, originalname, buffer } = req.file;
+
   const name_css = `${originalname.split(".")[0]}.css`;
+  
   const file_blob = new Blob([buffer]);
 
   const cid_font_file = await storeFileToIPFS(file_blob);
   const cid_css_file = await storeCSSToIPFS(name, name_css, cid_font_file);
   const cid_metadata_file = await storeMetadataToIPFS(name, name_css, cid_css_file);
 
-  fs.unlinkSync(`./uploads/${filename}`);
+  // fs.unlinkSync(`./uploads/${filename}`);
 
   res.json({
     name: name,
