@@ -1,9 +1,8 @@
-const { PinataSDK } = require("pinata")
-require("dotenv").config()
+import dotenv from "dotenv";
+import { PinataSDK } from "pinata";
+dotenv.config();
 
-export function pinataClient() {
-  return new PinataSDK({
-    pinataJwt: process.env.PINATA_JWT,
-    pinataGateway: process.env.GATEWAY_URL
-  });
-}
+export const pinata = new PinataSDK({
+  pinataJwt: `${process.env.PINATA_JWT}`,
+  pinataGateway: `${process.env.GATEWAY_URL}`
+});
