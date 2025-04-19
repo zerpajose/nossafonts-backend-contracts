@@ -20,22 +20,22 @@ export async function upload(req, res) {
   */
 
   const { name } = req.body;
-  const { filename, originalname, buffer } = req.file;
+  const { originalname, buffer } = req.file;
 
-  const name_css = `${originalname.split(".")[0]}.css`;
+  const nameCss = `${originalname.split(".")[0]}.css`;
   
-  const file_blob = new Blob([buffer]);
+  const fileBlob = new Blob([buffer]);
 
-  const cid_font_file = await storeFileToIPFS(file_blob);
-  const cid_css_file = await storeCSSToIPFS(name, name_css, cid_font_file);
-  const cid_metadata_file = await storeMetadataToIPFS(name, name_css, cid_css_file);
+  const { cid: cidFontFile } = storeFileToIPFS(fileBlob);
+  const cidCssFile = storeCSSToIPFS(name, nameCss, cidFontFile);
+  const cidMetadataFile = storeMetadataToIPFS(name, nameCss, cidCssFile);
 
   // fs.unlinkSync(`./uploads/${filename}`);
 
   res.json({
-    name: name,
-    cid_css_file: cid_css_file,
-    cid_metadata_file: cid_metadata_file,
+    name,
+    cidCssFile,
+    cidMetadataFile,
   });
 
   res.end();
