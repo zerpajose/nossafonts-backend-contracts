@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
-import { upload } from './controllers/upload';
-import { get } from './controllers/get';
+import { upload } from './controllers/upload.js';
+import { get } from './controllers/get.js';
 
 const router = express.Router();
 

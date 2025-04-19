@@ -1,7 +1,7 @@
 import express from 'express';
-import { register } from './controllers/register';
-import { get } from './controllers/get';
-import { search } from './controllers/search';
+import { register } from './controllers/register.js';
+import { get } from './controllers/get.js';
+import { search } from './controllers/search.js';
 
 const router = express.Router();
 
