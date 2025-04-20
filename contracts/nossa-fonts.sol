@@ -1,42 +1,37 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { ERC721Burnable } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import { ERC721URIStorage } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract OurFonts is ERC721, ERC721URIStorage, Ownable {
-
-  using Counters for Counters.Counter;
-
+contract NossaFonts is ERC721, ERC721URIStorage, Ownable {
   // In order to mint an nft, users need to deposit a stake (will be returned if burn the NFT)
   uint256 public constant STAKE_AMOUNT = 0.001 ether;
   // You will be added to AllowList when you do the stake deposit
   mapping(address => bool) public allowList;
 
-  Counters.Counter private _tokenIdCounter;
+  uint256 private _nextTokenId;
 
-  constructor() ERC721("OurFont", "OURFONT") {}
+  constructor(address initialOwner) ERC721("NossaFonts", "NOSSAFONTS") Ownable(initialOwner) {}
 
-  function safeMint(string memory uri) public {
+  function safeMint(string memory uri) public returns (uint256) {
     require(allowList[msg.sender], "You are not in the AllowList");
     address _to = msg.sender;
     
-    uint256 tokenId = _tokenIdCounter.current();
-    _tokenIdCounter.increment();
+    uint256 tokenId = _nextTokenId++;
     _safeMint(_to, tokenId);
     _setTokenURI(tokenId, uri);
-  }
-
-  // The following functions are overrides required by Solidity.
-
-  function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-    super._burn(tokenId);
+    return tokenId;
   }
 
   function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
     return super.tokenURI(tokenId);
+  }
+
+  function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721URIStorage) returns (bool) {
+    return super.supportsInterface(interfaceId);
   }
 
   //AllowList
