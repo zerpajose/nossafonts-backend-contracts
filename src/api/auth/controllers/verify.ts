@@ -5,9 +5,9 @@ export async function verify(req: Request, res: Response) {
   const { message, signature } = req.body;
   const siweMessage = new SiweMessage(message);
   try {
-      await siweMessage.verify({ signature });
-      res.send(true);
+    await siweMessage.verify({ signature });
+    res.send(true);
   } catch {
-      res.send(false);
+    res.send(false);
   }
 }

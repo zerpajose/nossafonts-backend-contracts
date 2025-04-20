@@ -1,7 +1,5 @@
-import { Request, Response } from "express";
-import {
-  saveToTable,
-} from "../../../lib/functions.js";
+import { Request, Response } from 'express';
+import { saveToTable } from '../../../lib/functions.js';
 
 export async function register(req: Request, res: Response) {
   const { id, name } = req.body;

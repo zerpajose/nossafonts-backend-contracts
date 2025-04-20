@@ -1,15 +1,14 @@
-import hre from "hardhat";
-import "@nomicfoundation/hardhat-ethers";
+import hre from 'hardhat';
+import '@nomicfoundation/hardhat-ethers';
 
 async function main() {
-
-  const contract = await hre.ethers.getContractFactory("OurFonts");
+  const contract = await hre.ethers.getContractFactory('OurFonts');
 
   const deployedContract = await contract.deploy();
 
   await deployedContract.deployed();
 
-  console.log("Deployed Contract Address:", deployedContract.address);
+  console.log('Deployed Contract Address:', deployedContract.address);
 }
 
 main()

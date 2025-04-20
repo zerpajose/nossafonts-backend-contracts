@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "npx nodemon ./dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./src --ext .ts"
+    "lint": "eslint ./src --ext .ts",
+    "prettify": "prettier --write \"./src\""
   },
   "keywords": [],
   "author": "",
@@ -32,8 +33,10 @@
     "@types/multer": "^1.4.12",
     "@types/node": "^22.14.1",
     "eslint": "^9.25.0",
+    "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",
     "hardhat": "^2.23.0",
+    "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1"
   },

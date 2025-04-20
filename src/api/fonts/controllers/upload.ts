@@ -3,7 +3,7 @@ import {
   storeFileToIPFS,
   storeCSSToIPFS,
   storeMetadataToIPFS,
-} from "../../../lib/functions.js";
+} from '../../../lib/functions.js';
 
 export async function upload(req: Request, res: Response) {
   /* web3 token authorization */
@@ -23,8 +23,8 @@ export async function upload(req: Request, res: Response) {
   const { name } = req.body;
   const { originalname, buffer, mimetype } = req.file as Express.Multer.File;
 
-  const nameCss = `${originalname.split(".")[0]}.css`;
-  
+  const nameCss = `${originalname.split('.')[0]}.css`;
+
   const blob = new Blob([buffer]);
   const fileBlob = new File([blob], originalname, {
     type: mimetype,

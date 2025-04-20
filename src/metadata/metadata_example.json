@@ -1,6 +1,6 @@
 {
-  "description": "fontname font for ourfonts", 
-  "external_url": "ipfs://file.css", 
-  "image": "ipfs://dfontslogo", 
+  "description": "fontname font for ourfonts",
+  "external_url": "ipfs://file.css",
+  "image": "ipfs://dfontslogo",
   "name": "font name"
 }
