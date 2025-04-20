@@ -1,8 +1,9 @@
-const { ethers } = require("hardhat");
+import hre from "hardhat";
+import "@nomicfoundation/hardhat-ethers";
 
 async function main() {
 
-  const contract = await ethers.getContractFactory("OurFonts");
+  const contract = await hre.ethers.getContractFactory("OurFonts");
 
   const deployedContract = await contract.deploy();
 

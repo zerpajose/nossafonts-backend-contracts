@@ -5,16 +5,16 @@ import { db } from "../clients/tableland.js";
 import { pinata } from "../clients/pinata.js";
 
 dotenv.config();
-const ALCHEMY_API_KEY_URL = process.env.ALCHEMY_API_KEY_URL;
-const DEPLOY_WALLET_PRIVATE_KEY = process.env.DEPLOY_WALLET_PRIVATE_KEY;
-const FONTS_TABLE_NAME = process.env.FONTS_TABLE_NAME;
+const ALCHEMY_API_KEY_URL = process.env.ALCHEMY_API_KEY_URL ?? "";
+const DEPLOY_WALLET_PRIVATE_KEY = process.env.DEPLOY_WALLET_PRIVATE_KEY ?? "";
+const FONTS_TABLE_NAME = process.env.FONTS_TABLE_NAME ?? "";
 
-async function storeFileToIPFS (fileBlob) {
+async function storeFileToIPFS (fileBlob: File) {
   const { cid } = await pinata.upload.public.file(fileBlob);
   return cid;
 }
 
-async function storeCSSToIPFS (name, nameCss, fileIpfs) {
+async function storeCSSToIPFS (name: string, nameCss: string, fileIpfs: string) {
   const css = new File(
     [
       `@font-face {
@@ -32,8 +32,8 @@ async function storeCSSToIPFS (name, nameCss, fileIpfs) {
   return cid;
 };
 
-async function storeMetadataToIPFS (name, nameCss, cssIpfs) {
-  const metadataBlob = new Blob(
+async function storeMetadataToIPFS (name: string, nameCss: string, cssIpfs: string) {
+  const metadataBlob = new File(
     [
       `{
       "description": "${name} font for OurFonts", 
@@ -42,6 +42,7 @@ async function storeMetadataToIPFS (name, nameCss, cssIpfs) {
       "name": "${name}"
       }`,
     ],
+    nameCss,
     { type: "text/json" }
   );
 
@@ -49,27 +50,7 @@ async function storeMetadataToIPFS (name, nameCss, cssIpfs) {
   return cid;
 };
 
-const connectTableland = async () => {
-  const aaku_splited = ALCHEMY_API_KEY_URL.split("/");
-
-  const wallet = new ethers.Wallet(DEPLOY_WALLET_PRIVATE_KEY);
-
-  const provider = new ethers.providers.AlchemyProvider(
-    "maticmum",
-    aaku_splited[aaku_splited.length - 1]
-  );
-
-  const signer = wallet.connect(provider);
-  const tableland = connect({
-    signer,
-    network: "testnet",
-    chain: "base-sepolia",
-  });
-
-  return tableland;
-};
-
-const saveToTable = async (nftId, fontName) => {
+const saveToTable = async (nftId: string, fontName: string) => {
   const query = `INSERT INTO ${FONTS_TABLE_NAME} (nft_id, name) VALUES (?, ?);`;
   console.log(`query: ${query}`);
 
@@ -84,33 +65,24 @@ const saveToTable = async (nftId, fontName) => {
 
   // Error: db query execution failed (code: SQLITE_UNIQUE constraint failed: _80001_3548.nft_id, msg: UNIQUE constraint failed: _80001_3548.nft_id)
 
-  return writeRes.transactionHash;
+  return writeRes?.transactionHash;
 };
 
 const selectAll = async () => {
-  let results = [];
-
-  const tableland = await connectTableland();
-
-  const { columns, rows } = await tableland.read(
-    `SELECT * FROM ${FONTS_TABLE_NAME} LIMIT 10;`
-  );
-
-  return rows;
+  const { results } = await db.prepare(`SELECT * FROM ${FONTS_TABLE_NAME};`).all();
+  return results;
 };
 
-const selectSearch = async (search) => {
-  const tableland = await connectTableland();
+const selectSearch = async (search: string) => {
+  const { results } = await db.prepare(`SELECT * FROM ${FONTS_TABLE_NAME} WHERE name LIKE ?;`)
+    .bind(`${search}%`)
+    .all();
 
-  const { columns, rows } = await tableland.read(
-    `SELECT * FROM ${FONTS_TABLE_NAME} WHERE name LIKE '${search}%';`
-  );
-
-  return { columns, rows };
+  return results;
 };
 
-const getIsAllowed = async (addr) => {
-  const customHttpProvider = new ethers.providers.JsonRpcProvider(
+const getIsAllowed = async (addr: string) => {
+  const customHttpProvider = new ethers.JsonRpcProvider(
     ALCHEMY_API_KEY_URL
   );
 

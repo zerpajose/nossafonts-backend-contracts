@@ -1,10 +1,11 @@
+import { Request, Response } from 'express';
 import {
   storeFileToIPFS,
   storeCSSToIPFS,
   storeMetadataToIPFS,
 } from "../../../lib/functions.js";
 
-export async function upload(req, res) {
+export async function upload(req: Request, res: Response) {
   /* web3 token authorization */
   /*
   const token = req.cookies.token
@@ -20,7 +21,7 @@ export async function upload(req, res) {
   */
 
   const { name } = req.body;
-  const { originalname, buffer, mimetype } = req.file;
+  const { originalname, buffer, mimetype } = req.file as Express.Multer.File;
 
   const nameCss = `${originalname.split(".")[0]}.css`;
   
