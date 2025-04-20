@@ -6,7 +6,6 @@ import { pinata } from "../clients/pinata.js";
 
 dotenv.config();
 const ALCHEMY_API_KEY_URL = process.env.ALCHEMY_API_KEY_URL ?? "";
-const DEPLOY_WALLET_PRIVATE_KEY = process.env.DEPLOY_WALLET_PRIVATE_KEY ?? "";
 const FONTS_TABLE_NAME = process.env.FONTS_TABLE_NAME ?? "";
 
 async function storeFileToIPFS (fileBlob: File) {
