@@ -8,12 +8,6 @@ export async function search(req: Request, res: Response) {
     res.send('Search by 3 or more characters');
   } else {
     const results = await selectSearch(search);
-
-    // if (!rows.length > 0) {
-    //   res.json([]);
-    // } else {
-    //   res.json(rows);
-    // }
     res.json(results);
   }
 

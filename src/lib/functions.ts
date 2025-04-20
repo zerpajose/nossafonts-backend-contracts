@@ -39,7 +39,7 @@ async function storeMetadataToIPFS(
   const metadataBlob = new File(
     [
       `{
-      "description": "${name} font for OurFonts", 
+      "description": "${name} font for NossaFonts", 
       "external_url": "https://${cssIpfs}.ipfs.nftstorage.link/${nameCss}", 
       "image": "https://bafkreidbxtbnltylax5a76ieixe6gxnkgoayqbtvhfgqvt5gycbm6zx3jq.ipfs.nftstorage.link", 
       "name": "${name}"
