@@ -1,9 +1,10 @@
-const {
+import hre from "hardhat";
+import {
   time,
   loadFixture,
-} = require("@nomicfoundation/hardhat-network-helpers");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
-const { expect } = require("chai");
+} from "@nomicfoundation/hardhat-network-helpers";
+import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
+import { expect } from "chai";
 
 describe("Lock", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -17,9 +18,9 @@ describe("Lock", function () {
     const unlockTime = (await time.latest()) + ONE_YEAR_IN_SECS;
 
     // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
+    const [owner, otherAccount] = await hre.ethers.getSigners();
 
-    const Lock = await ethers.getContractFactory("Lock");
+    const Lock = await hre.ethers.getContractFactory("Lock");
     const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
 
     return { lock, unlockTime, lockedAmount, owner, otherAccount };
@@ -43,7 +44,7 @@ describe("Lock", function () {
         deployOneYearLockFixture
       );
 
-      expect(await ethers.provider.getBalance(lock.address)).to.equal(
+      expect(await hre.ethers.provider.getBalance(lock.getAddress())).to.equal(
         lockedAmount
       );
     });
@@ -51,7 +52,7 @@ describe("Lock", function () {
     it("Should fail if the unlockTime is not in the future", async function () {
       // We don't use the fixture here because we want a different deployment
       const latestTime = await time.latest();
-      const Lock = await ethers.getContractFactory("Lock");
+      const Lock = await hre.ethers.getContractFactory("Lock");
       await expect(Lock.deploy(latestTime, { value: 1 })).to.be.revertedWith(
         "Unlock time should be in the future"
       );
@@ -69,7 +70,7 @@ describe("Lock", function () {
       });
 
       it("Should revert with the right error if called from another account", async function () {
-        const { lock, unlockTime, otherAccount } = await loadFixture(
+        const { lock, unlockTime } = await loadFixture(
           deployOneYearLockFixture
         );
 
@@ -77,7 +78,7 @@ describe("Lock", function () {
         await time.increaseTo(unlockTime);
 
         // We use lock.connect() to send a transaction from another account
-        await expect(lock.connect(otherAccount).withdraw()).to.be.revertedWith(
+        await expect(lock.withdraw()).to.be.revertedWith(
           "You aren't the owner"
         );
       });
